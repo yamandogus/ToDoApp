@@ -125,8 +125,8 @@ const CategoryPage = () => {
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="p-3 bg-muted rounded-lg">
-                        <div className="text-sm text-muted-foreground">
+                      <div className="p-3" style={{backgroundColor:'#23293a', borderRadius:'0.5rem'}}>
+                        <div className="text-sm" style={{color:'#bfc8e6'}}>
                           Toplam Todo
                         </div>
                         <div
@@ -136,16 +136,16 @@ const CategoryPage = () => {
                           {category.todoCount}
                         </div>
                       </div>
-                      <div className="p-3 bg-muted rounded-lg">
-                        <div className="text-sm text-muted-foreground">
+                      <div className="p-3" style={{backgroundColor:'#23293a', borderRadius:'0.5rem'}}>
+                        <div className="text-sm" style={{color:'#bfc8e6'}}>
                           Kategori Rengi
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <div
                             className="w-4 h-4 rounded border flex-shrink-0"
-                            style={{ backgroundColor: category.color }}
+                            style={{ backgroundColor: category.color, opacity:0.7 }}
                           />
-                          <span className="font-mono text-sm">
+                          <span className="font-mono text-sm" style={{color:'#bfc8e6'}}>
                             {category.color}
                           </span>
                         </div>

@@ -26,13 +26,13 @@ const UpcomingTasks = ({ todos }: UpcomingTasksProps) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive text-destructive-foreground";
       case "medium":
-        return "bg-orange-100 text-orange-800";
+        return "bg-accent text-accent-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-secondary text-secondary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 

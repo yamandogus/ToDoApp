@@ -15,10 +15,10 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background dark:bg-[#1b2232]">
           <Navbar />
           <Toaster position="top-right" />
-          <main className="container mx-auto px-2 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
+          <main className="container mx-auto px-2 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8 mt-16">
             <div>
               <Routes>
                 <Route path="/" element={<Dashboard />} />

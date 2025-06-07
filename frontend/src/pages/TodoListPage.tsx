@@ -62,9 +62,9 @@ const TodoListPage = () => {
 
   const getPriorityBadge = (priority: string) => {
     const priorityMap = {
-      low: { label: "Düşük", className: "bg-green-100 text-green-800" },
-      medium: { label: "Orta", className: "bg-yellow-100 text-yellow-800" },
-      high: { label: "Yüksek", className: "bg-red-100 text-red-800" }
+      low: { label: "Düşük", className: "bg-secondary text-secondary-foreground" },
+      medium: { label: "Orta", className: "bg-accent text-accent-foreground" },
+      high: { label: "Yüksek", className: "bg-destructive text-destructive-foreground" }
     }
     return priorityMap[priority as keyof typeof priorityMap] || priorityMap.medium
   }
@@ -81,12 +81,12 @@ const TodoListPage = () => {
       </div>
 
       <Tabs defaultValue="backend" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 shadow-lg h-auto md:p-1">
+        <TabsList className="grid w-full grid-cols-3 shadow-lg h-12 md:p-1">
           {categories.map((category) => (
             <TabsTrigger 
               key={category.id} 
               value={category.id}
-              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 min-h-[60px] sm:min-h-[40px]"
+              className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 min-h-[20px] sm:min-h-[20px]"
               style={{
                 '--category-color': category.color
               } as React.CSSProperties}
@@ -98,7 +98,7 @@ const TodoListPage = () => {
                 />
                 <span className="text-xs sm:text-sm font-medium">{category.name}</span>
               </div>
-              <Badge variant="secondary" className="text-xs px-1 font-bold py-0 bg-green-500 text-gray-100 dark:bg-gray-100 dark:text-gray-800">
+              <Badge variant="secondary" className="text-xs px-1 font-bold py-0" style={{backgroundColor:'#2d3650', color:'#e0e6f3'}}>
                 {category.count}
               </Badge>
             </TabsTrigger>

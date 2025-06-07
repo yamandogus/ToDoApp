@@ -69,10 +69,10 @@ const TodoDetailPage = () => {
         <h2 className="text-2xl font-semibold mb-2">{todo.title}</h2>
         {todo.description && <p className="mb-2 text-muted-foreground">{todo.description}</p>}
         <div className="mb-2 flex flex-wrap gap-2 text-sm">
-          <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">Durum: {todo.status}</span>
-          {todo.priority && <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Öncelik: {todo.priority}</span>}
-          {todo.dueDate && <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700">Bitiş: {new Date(todo.dueDate).toLocaleDateString('tr-TR')}</span>}
-          {todo.createdAt && <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-800">Oluşturulma: {new Date(todo.createdAt).toLocaleDateString('tr-TR')}</span>}
+          <span className="px-2 py-0.5 rounded-full">Durum: {todo.status}</span>
+          {todo.priority && <span className="px-2 py-0.5 rounded-full">Öncelik: {todo.priority}</span>}
+          {todo.dueDate && <span className="px-2 py-0.5 rounded-full">Bitiş: {new Date(todo.dueDate).toLocaleDateString('tr-TR')}</span>}
+          {todo.createdAt && <span className="px-2 py-0.5 rounded-full">Oluşturulma: {new Date(todo.createdAt).toLocaleDateString('tr-TR')}</span>}
         </div>
         <div className="mt-4 flex gap-2">
           <button 
