@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { TodoService } from "../services/todoService";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
-import { Status } from "../generated/client";
+import { Status } from "../../generated/prisma";
 import { successResponse } from "../utils/response";
 
 export class TodoController {

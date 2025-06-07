@@ -1,5 +1,5 @@
 import prisma from "../config/db";
-import { Status } from "@prisma/client";
+import { Status } from "../../generated/prisma";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 
 export class TodoRepository {
