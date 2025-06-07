@@ -2,11 +2,11 @@ import rateLimit from "express-rate-limit";
 
 // Global rate limiter
 export const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 dakika
+  windowMs: 5 * 60 * 1000, // 5 dakika
   max: 1000, // IP başına maksimum istek sayısı artırıldı
   message: {
     status: "error",
-    message: "Too many requests, please try again later..",
+    message: "Çok fazla istek gönderdiniz, lütfen daha sonra tekrar deneyin.",
   },
   standardHeaders: true, // RateLimit-* header'larını döndür
   legacyHeaders: false, // X-RateLimit-* header'larını döndürme
@@ -14,12 +14,12 @@ export const globalLimiter = rateLimit({
 
 // Auth rate limiter (login/register için)
 export const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 saat
+  windowMs: 5 * 60 * 1000, // 5 dakika
   max: 50, // IP başına maksimum istek sayısı artırıldı
   message: {
     status: "error",
     message:
-      "Too many login requests, please try again in 1 hour or contact the admin.",
+      "Çok fazla giriş isteği gönderdiniz, lütfen 5 dakika sonra tekrar deneyin veya yöneticiyle iletişime geçin.",
   },
   standardHeaders: true,
   legacyHeaders: false,
