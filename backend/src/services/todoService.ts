@@ -1,5 +1,5 @@
 import { TodoRepository } from "../repositories/TodoRepository";
-import { Status, Priority } from "../../generated/prisma";
+import { Status, Priority } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
 
@@ -39,6 +39,15 @@ export class TodoService {
   }
 
   static async updateTodoStatus(id: string, status: Status, userId: string) {
+    if (!Object.values(Status).includes(status)) {
+      throw new AppError(
+        `Invalid status. Allowed values are: ${Object.values(Status).join(
+          ", "
+        )}`,
+        400
+      );
+    }
+
     const todo = await TodoRepository.updateTodoStatus(id, status, userId);
     if (!todo) {
       throw new AppError("Todo not found", 404);
