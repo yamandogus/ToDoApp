@@ -1,4 +1,4 @@
-import { Priority, Status } from "../../generated/prisma";
+import { Priority, Status } from ".prisma/client";
 import { z } from "zod";
 
 export const createTodoSchema = z.object({
