@@ -12,7 +12,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -102,7 +101,7 @@ const ProfilePage = () => {
       await updateTodo(editTodo.id, {
         title: editForm.title,
         description: editForm.description,
-      }, token);
+      }, token || undefined);
       setEditTodo(null);
       // Profil verisini tekrar çek
       setLoading(true);
@@ -123,7 +122,7 @@ const ProfilePage = () => {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      await deleteTodo(deleteId, token);
+      await deleteTodo(deleteId, token || undefined);
       setDeleteId(null);
       // Profil verisini tekrar çek
       setLoading(true);

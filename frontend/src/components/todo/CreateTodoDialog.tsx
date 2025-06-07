@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -10,82 +10,101 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Plus, Calendar } from 'lucide-react'
-import { useTodos } from '@/hooks/useTodos'
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+} from "@/components/ui/select";
+import { Plus, Calendar } from "lucide-react";
+import { useTodos } from "@/hooks/useTodos";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const todoSchema = z.object({
-  title: z.string().min(3, 'Görev başlığı en az 3 karakter olmalıdır').max(100, 'Görev başlığı en fazla 100 karakter olabilir'),
-  description: z.string().max(500, 'Açıklama en fazla 500 karakter olabilir').optional(),
-  status: z.enum(['pending', 'in_progress', 'completed', 'cancelled'])
-    .default('pending')
-    .transform(val => val.toUpperCase()) as unknown as z.ZodEnum<['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']>,
-  priority: z.enum(['low', 'medium', 'high'])
-    .default('medium')
-    .transform(val => val.toUpperCase()) as unknown as z.ZodEnum<['LOW', 'MEDIUM', 'HIGH']>,
-  due_date: z.string().min(1, { message: 'Son tarih gereklidir.' }),
-})
+  title: z
+    .string()
+    .min(3, "Görev başlığı en az 3 karakter olmalıdır")
+    .max(100, "Görev başlığı en fazla 100 karakter olabilir"),
+  description: z
+    .string()
+    .max(500, "Açıklama en fazla 500 karakter olabilir")
+    .optional(),
+  status: z
+    .enum(["pending", "in_progress", "completed", "cancelled"])
+    .default("pending")
+    .transform((val) => val.toUpperCase()) as unknown as z.ZodEnum<
+    ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+  >,
+  priority: z
+    .enum(["low", "medium", "high"])
+    .default("medium")
+    .transform((val) => val.toUpperCase()) as unknown as z.ZodEnum<
+    ["LOW", "MEDIUM", "HIGH"]
+  >,
+  due_date: z.string().min(1, { message: "Son tarih gereklidir." }),
+});
 
-type TodoForm = z.infer<typeof todoSchema>
+type TodoForm = z.infer<typeof todoSchema>;
 
 interface CreateTodoDialogProps {
-  trigger?: React.ReactNode
+  trigger?: React.ReactNode;
 }
 
+const categories = [
+  { id: "backend", name: "Backend", color: "#4A90E2" },
+  { id: "frontend", name: "Frontend", color: "#50E3C2" },
+  { id: "database", name: "Database", color: "#F5A623" },
+];
+
 const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
-  const [open, setOpen] = useState(false)
-  const { addTodo, loading } = useTodos()
+  const [open, setOpen] = useState(false);
+  const { addTodo, loading } = useTodos();
   const token = useSelector((state: RootState) => state.auth.token);
   const userId = useSelector((state: RootState) => state.user.userId);
 
   useEffect(() => {
     console.log(token);
     console.log(userId);
-  }, [token, userId])
-  
+  }, [token, userId]);
+
   const {
     register,
     setValue,
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<TodoForm>({
     resolver: zodResolver(todoSchema),
     defaultValues: {
-      status: 'PENDING',
-      priority: 'MEDIUM'
-    }
-  })
+      status: "PENDING",
+      priority: "MEDIUM",
+    },
+  });
 
   const onSubmit = async (data: TodoForm) => {
-    console.log('onSubmit function CALLED. Form Data:', data);
-    console.log('Current userId from store:', userId);
-    console.log('Current token from store:', token);
-    console.log('Form isSubmitting:', isSubmitting);
-    console.log('useTodos loading state:', loading);
-    console.log('Form errors:', errors);
+    console.log("onSubmit function CALLED. Form Data:", data);
+    console.log("Current userId from store:", userId);
+    console.log("Current token from store:", token);
+    console.log("Form isSubmitting:", isSubmitting);
+    console.log("useTodos loading state:", loading);
+    console.log("Form errors:", errors);
     if (!userId) {
-      alert('Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.');
-      console.error('User ID not found. Please log in.');
+      alert("Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.");
+      console.error("User ID not found. Please log in.");
       return;
     }
     if (!token) {
-      alert('Yetkilendirme anahtarı bulunamadı. Lütfen tekrar giriş yapın.');
-      console.error('Authorization token not found. Please log in.');
+      alert("Yetkilendirme anahtarı bulunamadı. Lütfen tekrar giriş yapın.");
+      console.error("Authorization token not found. Please log in.");
       return;
     }
     try {
@@ -95,14 +114,14 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
         description: string;
         priority: string;
         status: string;
-        dueDate: string; 
+        dueDate: string;
       } = {
         title: data.title,
         userId: userId,
-        description: data.description || "", 
+        description: data.description || "",
         priority: data.priority, // Already transformed to uppercase by Zod
-        status: data.status,   // Already transformed to uppercase by Zod 
-        dueDate: new Date(data.due_date).toISOString(), 
+        status: data.status, // Already transformed to uppercase by Zod
+        dueDate: new Date(data.due_date).toISOString(),
       };
 
       // datetime-local input value is like "YYYY-MM-DDTHH:MM"
@@ -111,15 +130,15 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
       setOpen(false);
       reset();
     } catch (error) {
-      console.error('Görev oluşturulurken hata oluştu:', error);
-      alert('Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.');
+      console.error("Görev oluşturulurken hata oluştu:", error);
+      alert("Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.");
     }
-  }
+  };
 
   const handleCancel = () => {
-    setOpen(false)
-    reset()
-  }
+    setOpen(false);
+    reset();
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -138,8 +157,8 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
             Yeni bir görev oluşturmak için aşağıdaki formu doldurun.
           </DialogDescription>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           {/* Görev Başlığı */}
           <div className="space-y-2">
             <Label htmlFor="title">
@@ -148,7 +167,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
             <Input
               id="title"
               placeholder="Görev başlığını girin (3-100 karakter)"
-              {...register('title')}
+              {...register("title")}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -164,11 +183,28 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
               id="description"
               placeholder="Görev açıklamasını girin (maksimum 500 karakter)"
               className="min-h-[100px]"
-              {...register('description')}
+              {...register("description")}
             />
             {errors.description && (
-              <p className="text-sm text-red-500">{errors.description.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.description.message}
+              </p>
             )}
+          </div>
+
+          {/* Kategori */}
+          <div className="space-y-2">
+            <Label>
+              Kategori <span className="text-red-500">*</span>
+            </Label>
+            <RadioGroup className="flex flex-row gap-2" defaultValue="backend" required>
+              {categories.map((category) => (
+                <div style={{ borderColor: category.color }} className={`flex items-center space-x-2 gap-2 border-2 rounded-md py-1 px-2`} key={category.id}>
+                  <RadioGroupItem value={category.id} id={category.id} />
+                  <Label htmlFor={category.id} className="text-sm cursor-pointer">{category.name}</Label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
 
           {/* Durum */}
@@ -177,8 +213,8 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
               Durum <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={watch('status')}
-              onValueChange={(value) => setValue('status', value as any)}
+              value={watch("status")}
+              onValueChange={(value) => setValue("status", value as any)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Durum seçin" />
@@ -198,8 +234,8 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
               Öncelik <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={watch('priority')}
-              onValueChange={(value) => setValue('priority', value as any)}
+              value={watch("priority")}
+              onValueChange={(value) => setValue("priority", value as any)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Öncelik seçin" />
@@ -221,7 +257,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
               <Input
                 id="due_date"
                 type="datetime-local"
-                {...register('due_date')}
+                {...register("due_date")}
               />
               <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
@@ -232,13 +268,13 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
               İptal
             </Button>
             <Button type="submit">
-              {isSubmitting || loading ? 'Oluşturuluyor...' : 'Görevi Oluştur'}
+              {isSubmitting || loading ? "Oluşturuluyor..." : "Görevi Oluştur"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default CreateTodoDialog 
+export default CreateTodoDialog;
