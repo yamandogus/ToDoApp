@@ -1,11 +1,11 @@
-import { PrismaClient, Roles, Status, Priority } from "@prisma/client";
-import * as bcrypt from "bcrypt";
+import { PrismaClient, Status, Priority, Roles } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Örnek kullanıcı oluştur
-  const hashedPassword = await bcrypt.hash("123456yaman", 10);
+  const hashedPassword = await bcrypt.hash("123456", 10);
   const user = await prisma.user.create({
     data: {
       name: "Test User",
@@ -86,10 +86,24 @@ async function main() {
     }),
   ]);
 
+  // Admin kullanıcısı oluştur
+  const adminHashedPassword = await bcrypt.hash("yaman192645", 10);
+  await prisma.user.upsert({
+    where: { username: "yamanAdmin" },
+    update: {},
+    create: {
+      name: "Doğuş",
+      username: "yamanAdmin",
+      password: adminHashedPassword,
+      role: Roles.ADMIN,
+    },
+  });
+
   console.log("Seed data başarıyla oluşturuldu!");
   console.log("Kullanıcı:", user);
   console.log("Kategoriler:", categories);
   console.log("Todolar:", todos);
+  console.log("Admin user created successfully");
 }
 
 main()
