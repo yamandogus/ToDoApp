@@ -26,7 +26,8 @@ import { Plus, Calendar } from "lucide-react";
 import { useTodos } from "@/hooks/useTodos";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "../ui/checkbox";
+import { getCategories, Category } from "@/services/categoryService";
 
 const todoSchema = z.object({
   title: z
@@ -58,22 +59,39 @@ interface CreateTodoDialogProps {
   trigger?: React.ReactNode;
 }
 
-const categories = [
-  { id: "backend", name: "Backend", color: "#4A90E2" },
-  { id: "frontend", name: "Frontend", color: "#50E3C2" },
-  { id: "database", name: "Database", color: "#F5A623" },
-];
-
 const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   const [open, setOpen] = useState(false);
   const { addTodo, loading } = useTodos();
   const token = useSelector((state: RootState) => state.auth.token);
   const userId = useSelector((state: RootState) => state.user.userId);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [catLoading, setCatLoading] = useState(false);
 
   useEffect(() => {
-    console.log(token);
-    console.log(userId);
-  }, [token, userId]);
+    const fetchCategories = async () => {
+      setCatLoading(true);
+      try {
+        const data = await getCategories(token || undefined);
+        setCategories(data);
+      } catch (err) {
+        setCategories([]);
+      } finally {
+        setCatLoading(false);
+      }
+    };
+    fetchCategories();
+  }, [token]);
+
+  const toggleCategory = (id: string) => {
+    setSelected((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : prev.length < 2
+        ? [...prev, id]
+        : prev
+    );
+  };
 
   const {
     register,
@@ -91,46 +109,33 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   });
 
   const onSubmit = async (data: TodoForm) => {
-    console.log("onSubmit function CALLED. Form Data:", data);
-    console.log("Current userId from store:", userId);
-    console.log("Current token from store:", token);
-    console.log("Form isSubmitting:", isSubmitting);
-    console.log("useTodos loading state:", loading);
-    console.log("Form errors:", errors);
     if (!userId) {
       alert("Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.");
-      console.error("User ID not found. Please log in.");
       return;
     }
     if (!token) {
       alert("Yetkilendirme anahtarı bulunamadı. Lütfen tekrar giriş yapın.");
-      console.error("Authorization token not found. Please log in.");
+      return;
+    }
+    if (selected.length === 0) {
+      alert("En az bir kategori seçmelisiniz.");
       return;
     }
     try {
-      const backendPayload: {
-        title: string;
-        userId: string;
-        description: string;
-        priority: string;
-        status: string;
-        dueDate: string;
-      } = {
+      const backendPayload = {
         title: data.title,
         userId: userId,
         description: data.description || "",
-        priority: data.priority, // Already transformed to uppercase by Zod
-        status: data.status, // Already transformed to uppercase by Zod
+        priority: data.priority,
+        status: data.status,
         dueDate: new Date(data.due_date).toISOString(),
+        category_ids: selected,
       };
-
-      // datetime-local input value is like "YYYY-MM-DDTHH:MM"
-      // new Date("YYYY-MM-DDTHH:MM").toISOString() gives "YYYY-MM-DDTHH:MM:00.000Z"
       await addTodo(backendPayload, token || undefined);
       setOpen(false);
       reset();
+      setSelected([]);
     } catch (error) {
-      console.error("Görev oluşturulurken hata oluştu:", error);
       alert("Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.");
     }
   };
@@ -193,18 +198,34 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
           </div>
 
           {/* Kategori */}
-          <div className="space-y-2">
-            <Label>
-              Kategori <span className="text-red-500">*</span>
-            </Label>
-            <RadioGroup className="flex flex-row gap-2" defaultValue="backend" required>
-              {categories.map((category) => (
-                <div style={{ borderColor: category.color }} className={`flex items-center space-x-2 gap-2 border-2 rounded-md py-1 px-2`} key={category.id}>
-                  <RadioGroupItem value={category.id} id={category.id} />
-                  <Label htmlFor={category.id} className="text-sm cursor-pointer">{category.name}</Label>
-                </div>
-              ))}
-            </RadioGroup>
+          <div className="flex flex-row gap-4 flex-wrap">
+            {catLoading ? (
+              <span>Kategoriler yükleniyor...</span>
+            ) : categories.length === 0 ? (
+              <span>Kategori bulunamadı.</span>
+            ) : (
+              categories.map((category) => (
+                <Label
+                  key={category.id}
+                  htmlFor={category.id}
+                  className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-2 transition-colors cursor-pointer"
+                  style={{ borderColor: category.color }}
+                >
+                  <Checkbox
+                    id={category.id}
+                    checked={selected.includes(category.id)}
+                    onCheckedChange={() => toggleCategory(category.id)}
+                    disabled={!selected.includes(category.id) && selected.length >= 2}
+                    className={`data-[state=checked]:border-[${category.color}] data-[state=checked]:bg-[${category.color}] data-[state=checked]:text-black dark:data-[state=checked]:text-white`}
+                  />
+                  <div className="grid gap-1.5 font-normal">
+                    <p className="text-sm leading-none font-medium">
+                      {category.name}
+                    </p>
+                  </div>
+                </Label>
+              ))
+            )}
           </div>
 
           {/* Durum */}
@@ -259,7 +280,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
                 type="datetime-local"
                 {...register("due_date")}
               />
-              <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none dark:text-white" />
             </div>
           </div>
 

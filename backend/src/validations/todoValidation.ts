@@ -10,7 +10,10 @@ export const createTodoSchema = z.object({
     .max(500, "description is too long")
     .nullable(),
   priority: z.nativeEnum(Priority),
-  dueDate: z.coerce.date().min(new Date(), "dueDate is required"),
+  dueDate: z.coerce.date().min(new Date(), "Due date must be in the future"),
+  category_ids: z
+    .array(z.string().min(1, "category id is required"))
+    .min(1, "At least one category is required"),
 });
 
 export const updateTodoSchema = z

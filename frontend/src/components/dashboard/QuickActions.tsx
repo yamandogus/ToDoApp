@@ -5,9 +5,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const QuickActions = () => {
+  const navigate = useNavigate();
   return (
     <Card className="shadow-lg">
       <CardHeader>
@@ -17,18 +19,12 @@ const QuickActions = () => {
         <Button
           variant="outline"
           className="w-full justify-start"
-          onClick={() => {}}
+          onClick={() => {
+            navigate("/profile");
+          }}
         >
           <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-          Tüm Görevleri Gör
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full justify-start"
-          onClick={() => {}}
-        >
-          <AlertCircle className="h-4 w-4 mr-2 text-red-600" />
-          Geciken Görevler
+          Profili Görüntüle
         </Button>
       </CardContent>
     </Card>

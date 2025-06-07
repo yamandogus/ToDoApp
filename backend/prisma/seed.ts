@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Örnek kullanıcı oluştur
+
   const hashedPassword = await bcrypt.hash("123456", 10);
   const user = await prisma.user.create({
     data: {
