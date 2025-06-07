@@ -1,5 +1,5 @@
 import prisma from "../config/db";
-import { Status, Priority, Prisma } from "../../generated/prisma";
+import { Status, Priority, Prisma } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 import {
   PaginationOptions,
@@ -46,13 +46,17 @@ export class TodoRepository {
   }
 
   static async getTodo(id: string, userId: string): Promise<TodoData | null> {
-    return await prisma.todo.findUnique({
+    const todo = await prisma.todo.findUnique({
       where: {
         id,
         userId,
         deletedAt: null,
       },
+      include: {
+        categories: true,
+      },
     });
+    return todo;
   }
 
   static async createTodo(
@@ -121,13 +125,11 @@ export class TodoRepository {
             {
               title: {
                 contains: query,
-                mode: Prisma.QueryMode.insensitive,
               },
             },
             {
               description: {
                 contains: query,
-                mode: Prisma.QueryMode.insensitive,
               },
             },
           ],
