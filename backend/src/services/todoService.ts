@@ -1,7 +1,8 @@
-import { TodoRepository } from "../repositories/TodoRepository";
+
 import { Status } from "../../generated/prisma";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
+import { TodoRepository } from "../repositories/TodoRepository";
 
 export class TodoService {
   //refactor to get only user's todos

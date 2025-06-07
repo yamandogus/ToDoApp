@@ -1,3 +1,4 @@
+
 import { CategoryRepository } from "../repositories/CategoryRepository";
 import { CreateCategoryData, UpdateCategoryData } from "../model/categoryType";
 import { AppError } from "../utils/AppError";
