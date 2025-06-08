@@ -34,7 +34,7 @@ const Dashboard = () => {
     status: todo.status,
     priority: todo.priority,
     dueDate: todo.dueDate || '',
-    createdAt: todo.createdAt || '',
+    createdAt: todo.created_at || '',
     description: todo.description,
   }));
 

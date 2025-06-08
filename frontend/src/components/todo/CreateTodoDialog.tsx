@@ -29,6 +29,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { Checkbox } from "../ui/checkbox";
 import { getCategories, Category } from "@/services/categoryService";
 import { fetchTodos } from "@/store/slices/todoSlice";
+import { toast } from "react-hot-toast";
 
 const todoSchema = z.object({
   title: z
@@ -70,6 +71,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   const [selected, setSelected] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [catLoading, setCatLoading] = useState(false);
+  const {username} = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -142,12 +144,13 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
       };
       await addTodo(backendPayload, token || undefined);
       dispatch(fetchTodos(token))
+      toast.success("Görev başarıyla oluşturuldu!");
       setOpen(false);
       reset();
       setSelected([]);
     } catch (error) {
       console.log(error);
-      alert("Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.");
+      toast.error("Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.");
     }
   };
 
@@ -158,9 +161,9 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={username ? false : true}>
         {trigger || (
-          <Button className="flex items-center gap-2">
+          <Button className="flex items-center gap-2" >
             <Plus className="h-4 w-4" />
             Yeni Görev
           </Button>

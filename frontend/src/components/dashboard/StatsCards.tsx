@@ -5,20 +5,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-interface StatsCardsProps {
-  stats: {
-    total: number;
-    pending: number;
-    in_progress: number;
-    completed: number;
-    cancelled: number;
+
+
+const StatsCards = () => {
+ const {todos} = useSelector((state: RootState) => state.todos);
+
+  const statsNumbers = {
+    total: todos.length,
+    pending: todos.filter((t) => t.status === "PENDING").length,
+    in_progress: todos.filter((t) => t.status === "IN_PROGRESS").length,
+    completed: todos.filter((t) => t.status === "COMPLETED").length,
+    cancelled: todos.filter((t) => t.status === "CANCELLED").length,
   };
-}
-
-const StatsCards = ({ stats }: StatsCardsProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
       <Card className="border-l-4 border-l-blue-500 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -27,7 +30,7 @@ const StatsCards = ({ stats }: StatsCardsProps) => {
           <CheckCircle className="h-4 w-4 text-blue-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-xl lg:text-2xl font-bold">{stats.total}</div>
+          <div className="text-xl lg:text-2xl font-bold">{statsNumbers.total}</div>
           <p className="text-xs text-muted-foreground">Tüm görevler</p>
         </CardContent>
       </Card>
@@ -39,7 +42,7 @@ const StatsCards = ({ stats }: StatsCardsProps) => {
         </CardHeader>
         <CardContent>
           <div className="text-xl lg:text-2xl font-bold">
-            {stats.pending}
+            {statsNumbers.pending}
           </div>
           <p className="text-xs text-muted-foreground">Başlanmamış işler</p>
         </CardContent>
@@ -52,22 +55,23 @@ const StatsCards = ({ stats }: StatsCardsProps) => {
         </CardHeader>
         <CardContent>
           <div className="text-xl lg:text-2xl font-bold">
-            {stats.completed}
+            {statsNumbers.completed}
           </div>
           <p className="text-xs text-muted-foreground">Bitirilen işler</p>
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-red-500 shadow-lg">
+
+      <Card className="border-l-4 border-l-gray-500 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Geciken</CardTitle>
-          <AlertCircle className="h-4 w-4 text-red-600" />
+          <CardTitle className="text-sm font-medium">İptal Edilen</CardTitle>
+          <AlertCircle className="h-4 w-4 text-gray-600" />
         </CardHeader>
         <CardContent>
           <div className="text-xl lg:text-2xl font-bold">
-            {stats.cancelled}
+            {statsNumbers.cancelled}
           </div>
-          <p className="text-xs text-muted-foreground">Geciken görevler</p>
+          <p className="text-xs text-muted-foreground">İptal edilen görevler</p>
         </CardContent>
       </Card>
     </div>

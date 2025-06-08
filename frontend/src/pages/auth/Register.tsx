@@ -52,9 +52,10 @@ const Register: React.FC = () => {
 
     try {
       await authService.register(formData);
-      navigate('/');
+      toast.success("Hesap oluşturuldu!");
+      navigate("/auth/login");
     } catch (error) {
-      // Hata durumu authService içinde ele alınıyor
+      toast.error("Hesap oluşturulurken bir hata oluştu!");
     } finally {
       setIsLoading(false);
     }

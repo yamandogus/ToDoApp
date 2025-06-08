@@ -18,19 +18,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import SearchInput from './SearchInput'; 
-import { useSelector } from "react-redux";
+import SearchInput from "./SearchInput";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 const Navbar = () => {
   const location = useLocation();
   const [isDark, setIsDark] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { username, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { username, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
   const navigate = useNavigate();
 
-  
   const { logout } = useAuth();
+  const dispatch = useDispatch();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -39,11 +41,10 @@ const Navbar = () => {
     document.documentElement.classList.toggle("dark");
   };
 
-
-  const navigationLinks = [
-    { path: "/", label: "Dashboard" },
-    { path: "/categories", label: "Kategoriler" },
-  ];
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg">
@@ -54,19 +55,28 @@ const Navbar = () => {
               TodoNest
             </Link>
             <div className="hidden md:flex space-x-6">
-              {navigationLinks.map((link) => (
+              <Link
+                to="/"
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive("/")
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Dashboard
+              </Link>
+              {username && (
                 <Link
-                  key={link.path}
-                  to={link.path}
+                  to="/categories"
                   className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
-                    isActive(link.path)
+                    isActive("/categories")
                       ? "border-b-2 border-primary text-primary"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {link.label}
+                  Kategoriler
                 </Link>
-              ))}
+              )}
             </div>
           </div>
 
@@ -105,19 +115,18 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 {isAuthenticated ? (
                   <>
-                  <DropdownMenuItem 
-                    
-                    className="hover:text-primary transition-all duration-300 cursor-pointer"
-                    onClick={() => navigate('/profile')}
-                  >
-                    Hesap Bilgilerim    
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="hover:text-primary transition-all duration-300 cursor-pointer"
-                    onClick={logout}
-                  >
-                    Çıkış Yap
-                  </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="hover:text-primary transition-all duration-300 cursor-pointer"
+                      onClick={() => navigate("/profile")}
+                    >
+                      Hesap Bilgilerim
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="hover:text-primary transition-all duration-300 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      Çıkış Yap
+                    </DropdownMenuItem>
                   </>
                 ) : (
                   <>
@@ -155,20 +164,30 @@ const Navbar = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="grid gap-4 py-6">
-                  {navigationLinks.map((link) => (
+                  <Link
+                    to="/"
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors rounded-md ${
+                      isActive("/")
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                  {username && (
                     <Link
-                      key={link.path}
-                      to={link.path}
+                      to="/categories"
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors rounded-md ${
-                        isActive(link.path)
+                        isActive("/categories")
                           ? "bg-primary text-primary-foreground"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
                     >
-                      {link.label}
+                      Kategoriler
                     </Link>
-                  ))}
+                  )}
 
                   <div className="border-t pt-4 mt-4">
                     <div className="flex items-center justify-between px-3 py-2">

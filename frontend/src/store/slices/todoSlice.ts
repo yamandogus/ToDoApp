@@ -39,6 +39,9 @@ const todoSlice = createSlice({
     addTodo: (state, action) => {
       state.todos.push(action.payload);
     },
+    clearTodos: (state) => {
+      state.todos = [];
+    },
   },
   extraReducers: (builder) => {
     builder
