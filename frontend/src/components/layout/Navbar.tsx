@@ -42,7 +42,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.reload();
   };
 
   return (
@@ -65,16 +64,28 @@ const Navbar = () => {
                 Dashboard
               </Link>
               {username && (
-                <Link
-                  to="/categories"
-                  className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
-                    isActive("/categories")
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Kategoriler
-                </Link>
+                <>
+                  <Link
+                    to="/todos"
+                    className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive("/todos")
+                        ? "border-b-2 border-primary text-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Todo Listesi
+                  </Link>
+                  <Link
+                    to="/categories"
+                    className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive("/categories")
+                        ? "border-b-2 border-primary text-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Kategoriler
+                  </Link>
+                </>
               )}
             </div>
           </div>
@@ -175,17 +186,30 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                   {username && (
-                    <Link
-                      to="/categories"
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors rounded-md ${
-                        isActive("/categories")
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                      }`}
-                    >
-                      Kategoriler
-                    </Link>
+                    <>
+                      <Link
+                        to="/todos"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors rounded-md ${
+                          isActive("/todos")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        Todo Liste
+                      </Link>
+                      <Link
+                        to="/categories"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors rounded-md ${
+                          isActive("/categories")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        Kategoriler
+                      </Link>
+                    </>
                   )}
 
                   <div className="border-t pt-4 mt-4">

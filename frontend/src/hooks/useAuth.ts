@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { setCredentials, logout as logoutAction } from '../store/authSlice';
 
@@ -17,6 +18,7 @@ interface RegisterData {
 
 export const useAuth = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,8 +60,22 @@ export const useAuth = () => {
   };
 
   const logout = () => {
-    authService.logout();
-    dispatch(logoutAction());
+    try {
+      // Çıkış işlemi
+      authService.logout();
+      
+      // Store temizle
+      dispatch(logoutAction());
+      
+      // Ana sayfaya git
+      navigate('/', { replace: true });
+      
+      console.log('Çıkış yapıldı, ana sayfaya yönlendirildi');
+    } catch (error) {
+      console.error('Logout hatası:', error);
+      // Hata durumunda ana sayfaya git
+      navigate('/', { replace: true });
+    }
   };
 
   return {

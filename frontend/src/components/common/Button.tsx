@@ -1,1 +1,1 @@
-// Common Button Component - Ortak buton komponenti buraya gelecek 
+// Ortak buton komponenti 

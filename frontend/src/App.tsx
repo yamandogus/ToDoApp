@@ -5,9 +5,11 @@ import { store } from './store/store'
 import Navbar from './components/layout/Navbar'
 import Dashboard from './pages/Dashboard'
 import CategoryPage from './pages/CategoryPage'
+import TodoListPage from './pages/TodoListPage'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import ProfilePage from './pages/ProfilePage'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
   return (
@@ -20,10 +22,32 @@ function App() {
             <div>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/categories" element={<CategoryPage />} />
+                <Route 
+                  path="/todos" 
+                  element={
+                    <ProtectedRoute>
+                      <TodoListPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/categories" 
+                  element={
+                    <ProtectedRoute>
+                      <CategoryPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/register" element={<Register />} />
-                <Route path="/profile" element={<ProfilePage />} /> 
               </Routes>
             </div>
           </main>

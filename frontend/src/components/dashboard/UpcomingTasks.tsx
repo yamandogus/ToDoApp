@@ -6,6 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 interface Todo {
   id: string;
@@ -25,10 +27,21 @@ const UpcomingTasks = ({ todos }: UpcomingTasksProps) => {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="text-lg lg:text-xl">Yaklaşan Görevler</CardTitle>
-        <CardDescription className="text-sm">
-          En yakın tarihli görevleriniz
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg lg:text-xl">Yaklaşan Görevler</CardTitle>
+            <CardDescription className="text-sm">
+              En yakın tarihli görevleriniz
+            </CardDescription>
+          </div>
+          <Link 
+            to="/todos" 
+            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors group"
+          >
+            Tümünü görüntüle
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
       </CardHeader>
       <CardContent>
         <ul className="space-y-6">

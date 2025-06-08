@@ -20,13 +20,6 @@ const Dashboard = () => {
     }
   }, [token, dispatch]);
 
-  const stats = {
-    total: todos.length,
-    pending: todos.filter((t) => t.status === "pending").length,
-    in_progress: todos.filter((t) => t.status === "in_progress").length,
-    completed: todos.filter((t) => t.status === "completed").length,
-    cancelled: todos.filter((t) => t.status === "cancelled").length,
-  };
 
   const recentTodos = todos.slice(0, 5).map((todo) => ({
     id: todo.id.toString(),
@@ -45,7 +38,7 @@ const Dashboard = () => {
     <div className="flex flex-col lg:flex-row gap-6 lg:gap-0">
       <div className="flex-1 space-y-6 lg:space-y-8">
         <DashboardHeader />
-        <StatsCards stats={stats} />
+        <StatsCards  />
         <UpcomingTasks todos={recentTodos} />
       </div>
       <div className="w-full lg:w-80 lg:ml-6 space-y-6">

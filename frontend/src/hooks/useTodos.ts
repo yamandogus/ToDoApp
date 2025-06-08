@@ -20,7 +20,7 @@ export function useTodos() {
     }
   };
 
-  // Todo güncelleme fonksiyonu
+  // Todo güncelleme
   type UpdateTodoPayload = Partial<TodoPayload>;
 
   const updateTodo = async (id: string, payload: UpdateTodoPayload, token?: string) => {
@@ -38,7 +38,7 @@ export function useTodos() {
     }
   };
 
-  // Todo silme fonksiyonu
+  // Todo silme
   const deleteTodo = async (id: string, token?: string) => {
     setLoading(true);
     setError(null);

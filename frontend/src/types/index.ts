@@ -1,4 +1,4 @@
-// Todo types
+// Todo tipleri
 export interface Todo {
   id: string
   title: string
@@ -11,7 +11,7 @@ export interface Todo {
   categories?: Category[]
 }
 
-// Category types
+// Kategori tipleri
 export interface Category {
   id: string
   name: string
@@ -20,7 +20,7 @@ export interface Category {
   updated_at: string
 }
 
-// API Response types
+// API yanıt tipleri
 export interface ApiResponse<T> {
   status: 'success' | 'error'
   message?: string
@@ -38,7 +38,7 @@ export interface ApiResponse<T> {
   errors?: string[]
 }
 
-// Stats types
+// İstatistik tipleri
 export interface TodoStats {
   total: number
   pending: number

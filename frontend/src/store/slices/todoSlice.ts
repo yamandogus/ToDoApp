@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { api } from '@/services/api';
 
-// CategoryPage.tsx'deki Todo arayüzü ile senkronize edildi
+// CategoryPage ile senkronize
 interface Todo {
   id: string;
   title: string;
@@ -9,9 +9,9 @@ interface Todo {
   status: string;
   priority: string;
   dueDate?: string;
-  created_at?: string; // due_date'den dueDate'e güncellendi ve opsiyonel yapıldı
-  categories?: Array<{ categoryId: string; Category: any }>; // Backend'den gelen yapı
-  category_ids: string[]; // Dönüşüm sonrası eklenecek
+  created_at?: string; // Opsiyonel alan
+  categories?: Array<{ categoryId: string; Category: any }>; // Backend yapısı
+  category_ids: string[]; // Dönüşüm sonrası
 }
 
 export const fetchTodos = createAsyncThunk(

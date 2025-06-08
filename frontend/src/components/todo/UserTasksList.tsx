@@ -57,7 +57,7 @@ const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
   const [editForm, setEditForm] = useState<{ title: string; description: string; status: string }>({ title: '', description: '', status: 'PENDING' });
   const [loading, setLoading] = useState(false);
 
-  // Düzenle butonuna basınca dialogu aç
+  // Düzenleme dialogu
   const handleEditClick = (todo: Todo) => {
     setEditTodo(todo);
     setEditForm({
@@ -67,7 +67,7 @@ const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
     });
   };
 
-  // Düzenleme formunu gönder
+  // Form gönder
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editTodo) return;
