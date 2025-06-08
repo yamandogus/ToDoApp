@@ -93,7 +93,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center py-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-start justify-center py-10">
       <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
         {/* Profilim */}
         <div className="flex-1 max-w-md">

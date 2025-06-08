@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Moon, Sun, User, Menu } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,16 +10,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import SearchInput from "./SearchInput";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 const Navbar = () => {
   const location = useLocation();
@@ -41,7 +35,10 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    navigate("/");
     logout();
+    window.location.reload();
+
   };
 
   return (
@@ -95,6 +92,59 @@ const Navbar = () => {
               <SearchInput />
             </div>
 
+            {/* User Menu */}
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className=" transition-all duration-300 w-full flex items-center gap-2"
+                >
+                  {isAuthenticated ? (
+                    <>
+                      <User className="h-4 w-4" />
+                      <span>{username}</span>
+                    </>
+                  ) : (
+                    "Giriş Yap"
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-60">
+                <div className="grid gap-4">
+                  {isAuthenticated ? (
+                    <>
+                      <Button
+                        size={"sm"}
+                        variant={"outline"}
+                        className="w-full bg-slate-900 text-white dark:bg-slate-100 dark:text-black"
+                        onClick={() => navigate("/profile")}
+                      >
+                        Hesap Bilgilerim
+                      </Button>
+                      <Button
+                        size={"sm"}
+                        variant={"outline"}
+                        className="w-full bg-red-500 text-white dark:bg-red-500 dark:text-white"
+                        onClick={handleLogout}
+                      >
+                        Çıkış Yap
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button size={"sm"} variant={"outline"} className="w-full bg-slate-900 text-white dark:bg-slate-100 dark:text-black">
+                        <Link to="/auth/login">Giriş Yap</Link>
+                      </Button>
+                      <Button size={"sm"} variant={"outline"} className="w-full bg-slate-900 text-white dark:bg-slate-100 dark:text-black">
+                        <Link to="/auth/register">Kayıt Ol</Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+
             <Button
               variant="ghost"
               size="icon"
@@ -108,48 +158,6 @@ const Navbar = () => {
               )}
               <span className="sr-only">Toggle theme</span>
             </Button>
-
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="hover:text-primary transition-all duration-300 w-full flex items-center gap-2">
-                {isAuthenticated ? (
-                  <>
-                    <User className="h-4 w-4" />
-                    <span>{username}</span>
-                  </>
-                ) : (
-                  "Giriş Yap"
-                )}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="flex flex-col justify-center items-center text-center w-full">
-                <DropdownMenuSeparator />
-                {isAuthenticated ? (
-                  <>
-                    <DropdownMenuItem
-                      className="hover:text-primary transition-all duration-300 cursor-pointer"
-                      onClick={() => navigate("/profile")}
-                    >
-                      Hesap Bilgilerim
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="hover:text-primary transition-all duration-300 cursor-pointer"
-                      onClick={handleLogout}
-                    >
-                      Çıkış Yap
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem className="hover:text-primary transition-all duration-300 w-full">
-                      <Link to="/auth/login">Giriş Yap</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:text-primary transition-all duration-300 w-full">
-                      <Link to="/auth/register">Kayıt Ol</Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
