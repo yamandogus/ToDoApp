@@ -6,6 +6,7 @@ import { api } from "@/services/api";
 import { useTodos } from "@/hooks/useTodos";
 import CreateTodoDialog from "@/components/todo/CreateTodoDialog";
 import UserTasksList from "@/components/todo/UserTasksList";
+import { User } from "lucide-react";
 
 interface Todo {
   id: string;
@@ -92,25 +93,35 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-[#181f2a] shadow-xl rounded-2xl p-8 border border-gray-100 flex flex-col gap-4 items-start">
-          <h1 className="text-3xl font-extrabold mb-4 text-primary">Profilim</h1>
-          <div className="w-full bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-800 flex flex-col gap-2">
-            <h2 className="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">Kullanıcı Bilgileri</h2>
-            <div className="flex flex-col gap-1 text-base text-gray-700 dark:text-gray-300">
-              <span><span className="font-medium">Ad:</span> {profileData.name}</span>
-              <span><span className="font-medium">Kullanıcı Adı:</span> {profileData.username}</span>
-              <span><span className="font-medium">Rol:</span> {profileData.role}</span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center py-10">
+      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
+        {/* Profilim */}
+        <div className="flex-1 max-w-md">
+          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-xl p-8 sm:p-10">
+            <div className="flex flex-row items-center gap-3 mb-4">
+              <User className="w-10 h-10 text-blue-600" />
+              <h2 className="text-2xl font-bold text-gray-900">Kullanıcı Bilgileri</h2>
+            </div>
+            <div className="flex flex-col gap-3 text-base text-gray-700">
+              <span>
+                <span className="font-semibold text-gray-800">Ad:</span> {profileData.name}
+              </span>
+              <span>
+                <span className="font-semibold text-gray-800">Kullanıcı Adı:</span> {profileData.username}
+              </span>
+              <span>
+                <span className="font-semibold text-gray-800">Rol:</span> {profileData.role}
+              </span>
             </div>
           </div>
         </div>
-        <div>
-          {profileData.todos && profileData.todos.length > 0 && (
-            <div className="bg-card shadow-lg rounded-2xl p-8">
-              <h2 className="text-2xl font-semibold mb-6">
-                Görevlerim ({profileData.todos.length})
-              </h2>
+        {/* Görevlerim */}
+        <div className="flex-1 flex flex-col">
+          <div className="bg-white rounded-2xl shadow-xl p-8 flex-1 flex flex-col">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+              Görevlerim ({profileData.todos.length})
+            </h2>
+            {profileData.todos && profileData.todos.length > 0 ? (
               <UserTasksList
                 todos={profileData.todos}
                 onUpdate={async (id, data) => {
@@ -138,14 +149,15 @@ const ProfilePage = () => {
                   );
                 }}
               />
-            </div>
-          )}
-          {profileData.todos && profileData.todos.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-sm text-muted-foreground">Görev bulunamadı.</p>
-              <CreateTodoDialog />
-            </div>
-          )}
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-4 flex-1">
+                <p className="text-sm text-muted-foreground">
+                  Görev bulunamadı.
+                </p>
+                <CreateTodoDialog />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
