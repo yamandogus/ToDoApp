@@ -109,6 +109,11 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   });
 
   const onSubmit = async (data: TodoForm) => {
+    console.log("data", data);
+    console.log("selected", selected);
+    console.log("userId", userId);
+    console.log("token", token);
+    console.log("categories", categories);
     if (!userId) {
       alert("Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.");
       return;

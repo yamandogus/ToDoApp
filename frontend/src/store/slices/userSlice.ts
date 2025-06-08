@@ -32,6 +32,11 @@ const userSlice = createSlice({
       state.username = action.payload.username;
       state.role = action.payload.role;
       state.token = action.payload.token;
+      localStorage.setItem("userId", action.payload.id);
+      localStorage.setItem("name", action.payload.name);
+      localStorage.setItem("username", action.payload.username);
+      localStorage.setItem("role", action.payload.role);
+      localStorage.setItem("token", action.payload.token);
     },
     clearUser: (state) => {
       state.userId = null;
