@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {Search } from "lucide-react";
-import axios from "axios";
-import { BASE_URL } from "@/services/authService";
+import { api } from "@/services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Badge } from "../ui/badge";
@@ -59,7 +58,7 @@ const SearchInput = () => {
     setError(null);
     const timeout = setTimeout(async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/todos/search`, {
+        const response = await api.get('/api/todos/search', {
           params: { q: searchTerm },
           headers: { Authorization: `Bearer ${token}` },
         });

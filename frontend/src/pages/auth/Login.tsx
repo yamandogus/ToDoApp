@@ -9,7 +9,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { authService } from "@/services/authService";
 import { setCredentials } from "@/store/authSlice";
 import toast from "react-hot-toast";
-import { setUser } from "@/store/slices/userSlice";
+import { setUser } from "@/store/authSlice";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();

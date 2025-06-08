@@ -1,7 +1,5 @@
-import axios from 'axios';
 import toast from 'react-hot-toast';
-
-export const BASE_URL = 'http://localhost:3000';
+import { api, BASE_URL } from './api';
 
 interface LoginData {
   username: string;
@@ -18,7 +16,7 @@ interface RegisterData {
 export const authService = {
   login: async (data: LoginData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/login`, data);
+      const response = await api.post('/api/auth/login', data);
       const responseData = response.data;
       
       if (responseData.status === 'success' && responseData.data?.token) {
@@ -35,7 +33,7 @@ export const authService = {
 
   register: async (data: RegisterData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/signup`, data);
+      const response = await api.post('/api/auth/signup', data);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         toast.success('Başarıyla kayıt olundu!');

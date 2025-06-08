@@ -10,8 +10,6 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 
 interface Todo {
@@ -26,7 +24,7 @@ interface Todo {
 
 interface UserTasksListProps {
   todos: Todo[];
-  onUpdate: (id: string, data: { title: string; description: string }) => Promise<void> | void;
+  onUpdate: (id: string, data: { title?: string; description?: string; status?: string }) => Promise<void> | void;
   onDelete: (id: string) => Promise<void> | void;
 }
 
@@ -56,7 +54,7 @@ export const getPriorityColor = (priority?: string) => {
 const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
   const [editTodo, setEditTodo] = useState<Todo | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ title: '', description: '' });
+  const [editForm, setEditForm] = useState<{ title: string; description: string; status: string }>({ title: '', description: '', status: 'PENDING' });
   const [loading, setLoading] = useState(false);
 
   // Düzenle butonuna basınca dialogu aç
@@ -65,6 +63,7 @@ const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
     setEditForm({
       title: todo.title,
       description: todo.description || '',
+      status: todo.status,
     });
   };
 
@@ -77,6 +76,7 @@ const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
       await onUpdate?.(editTodo.id, {
         title: editForm.title,
         description: editForm.description,
+        status: editForm.status,
       });
       setEditTodo(null);
     } catch (err) {
@@ -149,23 +149,22 @@ const UserTasksList = ({ todos, onUpdate, onDelete }: UserTasksListProps) => {
       <Dialog open={!!editTodo} onOpenChange={(open) => !open && setEditTodo(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Görev Düzenle</DialogTitle>
-            <DialogDescription>Görev bilgilerini güncelleyin.</DialogDescription>
+            <DialogTitle>Durumu Güncelle</DialogTitle>
+            <DialogDescription>Durum güncellemesi yapılırken diğer bilgiler değişmez.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEditSubmit} className="space-y-4">
-            <Input
-              value={editForm.title}
-              onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
-              placeholder="Başlık"
-              required
+            
+            <select
+              className="border rounded px-2 py-1 text-xs"
+              value={editForm.status}
+              onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
               disabled={loading}
-            />
-            <Textarea
-              value={editForm.description}
-              onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
-              placeholder="Açıklama"
-              disabled={loading}
-            />
+            >
+              <option value="PENDING">Bekliyor</option>
+              <option value="IN_PROGRESS">Devam Ediyor</option>
+              <option value="COMPLETED">Tamamlandı</option>
+              <option value="CANCELLED">İptal</option>
+            </select>
             <DialogFooter>
               <Button type="submit" disabled={loading}>Kaydet</Button>
               <DialogClose asChild>

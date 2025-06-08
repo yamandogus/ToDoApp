@@ -30,7 +30,7 @@ interface Todo {
 
 const CategoryPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const tokenFromStore = useSelector((state: RootState) => state.user.token);
+  const tokenFromStore = useSelector((state: RootState) => state.auth.token);
   const token = tokenFromStore || localStorage.getItem("token");
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>("");

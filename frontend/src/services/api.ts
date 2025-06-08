@@ -1,8 +1,7 @@
 
 import axios from 'axios'
-import { BASE_URL } from './authService'
 
-
+export const BASE_URL = 'http://localhost:3000';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -10,5 +9,3 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
-
-export { BASE_URL }

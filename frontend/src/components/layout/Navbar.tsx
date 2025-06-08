@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import SearchInput from "./SearchInput";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 const Navbar = () => {
@@ -32,7 +32,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { logout } = useAuth();
-  const dispatch = useDispatch();
 
   const isActive = (path: string) => location.pathname === path;
 

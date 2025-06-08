@@ -66,7 +66,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   const { addTodo, loading } = useTodos();
   const token = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch<AppDispatch>();
-  const userId = useSelector((state: RootState) => state.user.userId);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const localUserId = localStorage.getItem("userId");
   const [selected, setSelected] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
