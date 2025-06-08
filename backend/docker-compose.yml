@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: todoapp
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Test Database (ayrı database)
+  postgres-test:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: todoapp_test
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp_test"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://todouser:todopassword@postgres:5432/todoapp
+      DATABASE_TEST_URL: postgresql://todouser:todopassword@postgres-test:5432/todoapp_test
+      JWT_SECRET: your-super-secret-jwt-key-here
+      PORT: 3000
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      postgres-test:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate dev --name init && npm run dev"
+
+  # Redis (Caching ve Session için opsiyonel)
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass todoredispassword
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  postgres_test_data: 

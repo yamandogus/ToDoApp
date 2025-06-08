@@ -23,25 +23,26 @@ Modern Todo uygulaması için Express.js ve TypeScript kullanılarak geliştiril
 
 ## 🛠️ Kurulum
 
-### 1. Projeyi Klonlayın
+### Geleneksel Kurulum
+
+#### 1. Projeyi Klonlayın
 ```bash
 git clone <repository-url>
 cd backend
 ```
 
-### 2. Bağımlılıkları Yükleyin
+#### 2. Bağımlılıkları Yükleyin
 ```bash
 npm install
 ```
 
-### 3. Çevre Değişkenlerini Ayarlayın
-`.env` dosyası oluşturun:
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/todoapp"
-JWT_SECRET="your-super-secret-jwt-key"
+#### 3. Çevre Değişkenlerini Ayarlayın
+`env.example` dosyasını `.env` olarak kopyalayın ve düzenleyin:
+```bash
+cp env.example .env
 ```
 
-### 4. Veritabanını Kurun
+#### 4. Veritabanını Kurun
 ```bash
 # Prisma migration'larını çalıştırın
 npx prisma migrate dev
@@ -50,7 +51,7 @@ npx prisma migrate dev
 npm run prisma:seed
 ```
 
-### 5. Sunucuyu Başlatın
+#### 5. Sunucuyu Başlatın
 ```bash
 # Development modu
 npm run dev
@@ -58,6 +59,38 @@ npm run dev
 # Production build
 npm run build
 npm start
+```
+
+### 🐳 Docker ile Kurulum (Önerilen)
+
+#### Development Ortamı
+```bash
+# Tüm servisleri başlat (PostgreSQL, Test DB, API)
+docker-compose up --build
+
+# Sadece veritabanı servislerini başlat
+docker-compose up postgres postgres-test -d
+
+# API'yi ayrı olarak çalıştır
+npm run dev
+```
+
+#### Production Ortamı
+```bash
+# Production ortamını başlat
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+#### Docker Komutları
+```bash
+# Servisleri durdur ve volume'ları temizle
+npm run docker:down
+
+# Sadece build
+npm run docker:build
+
+# Test çalıştır (Docker içinde)
+npm run docker:test
 ```
 
 ## 📚 API Dokümantasyonu
@@ -326,6 +359,33 @@ Content-Type: application/json
 
 ## 🧪 Test
 
+### Test Ortamı Kurulumu
+
+#### Docker ile Test (Önerilen)
+```bash
+# Test veritabanını başlat
+docker-compose up postgres-test -d
+
+# Test ortamını hazırla
+npm run test:setup
+
+# Testleri çalıştır
+npm test
+```
+
+#### Manuel Test Kurulumu
+```bash
+# Test veritabanını oluştur
+createdb todoapp_test
+
+# Test environment değişkenini ayarla
+export DATABASE_TEST_URL="postgresql://username:password@localhost:5432/todoapp_test"
+
+# Test migration'larını çalıştır
+DATABASE_URL=$DATABASE_TEST_URL npx prisma migrate dev
+```
+
+### Test Komutları
 ```bash
 # Tüm testleri çalıştır
 npm test
@@ -335,7 +395,30 @@ npm run test:watch
 
 # Coverage raporu
 npm run test:coverage
+
+# CI için testler (watch olmadan)
+npm run test:ci
+
+# Docker içinde test çalıştır
+npm run docker:test
 ```
+
+### Test Yapısı
+```
+src/__tests__/
+├── setup.ts           # Test setup ve teardown
+├── todo.test.ts       # Todo API testleri
+├── category.test.ts   # Kategori API testleri
+├── stats.test.ts      # İstatistik API testleri
+└── auth.test.ts       # Kimlik doğrulama testleri
+```
+
+### Test Özellikleri
+- **Kapsamlı API Testleri**: Tüm endpoint'ler için test coverage
+- **Ayrı Test Veritabanı**: Production verilerini etkilemez
+- **Otomatik Cleanup**: Her testten sonra veriler temizlenir
+- **Mocking**: Dış servislerin mocklanması
+- **Coverage Reports**: HTML ve LCOV formatlarında rapor
 
 ## 📁 Proje Yapısı
 
