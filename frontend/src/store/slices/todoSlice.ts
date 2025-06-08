@@ -1,23 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { api } from '@/services/api';
 
+// CategoryPage.tsx'deki Todo arayüzü ile senkronize edildi
 interface Todo {
   id: string;
   title: string;
   description: string;
   status: string;
   priority: string;
-  due_date: string;
-  category_ids: string[];
+  dueDate?: string; // due_date'den dueDate'e güncellendi ve opsiyonel yapıldı
+  categories?: Array<{ categoryId: string; Category: any }>; // Backend'den gelen yapı
+  category_ids: string[]; // Dönüşüm sonrası eklenecek
 }
 
 export const fetchTodos = createAsyncThunk(
   'todos/fetchTodos',
   async (token: string) => {
-    const response = await api.get('/api/users/me', {
+    const response = await api.get('/api/todos', { 
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data.data.todos;
+    console.log("API response from /api/todos:", response.data); 
+    return response.data.data.data; 
   }
 );
 
@@ -42,7 +45,11 @@ const todoSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
-        state.todos = action.payload;
+        const rawTodos = action.payload || [];
+        state.todos = rawTodos.map((todo: any) => ({
+          ...todo,
+          category_ids: todo.categories ? todo.categories.map((cat: any) => cat.categoryId) : [],
+        }));
         state.loading = false;
       })
       .addCase(fetchTodos.rejected, (state, action) => {

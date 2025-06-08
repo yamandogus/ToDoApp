@@ -8,37 +8,57 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getCategories } from "@/services/categoryService";
+import { useEffect, useState } from "react";
+import { AppDispatch, RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTodos } from "@/store/slices/todoSlice";
 
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+  todoCount?: number; 
+}
+
+interface Todo {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  dueDate?: string;
+  category_ids: string[];
+}
 const CategoryPage = () => {
-  const categories = [
-    {
-      id: "backend",
-      name: "Backend",
-      color: "#4A90E2",
-      todoCount: 5,
-      description:
-        "Backend geliştirme görevleri - API, veritabanı, sunucu işlemleri",
-      created_at: "2025-05-01T10:00:00.000Z",
-    },
-    {
-      id: "frontend",
-      name: "Frontend",
-      color: "#50E3C2",
-      todoCount: 3,
-      description:
-        "Frontend geliştirme görevleri - React, UI/UX, kullanıcı arayüzü",
-      created_at: "2025-05-01T11:00:00.000Z",
-    },
-    {
-      id: "database",
-      name: "Database",
-      color: "#F5A623",
-      todoCount: 2,
-      description:
-        "Veritabanı görevleri - Şema tasarımı, migrasyon, optimizasyon",
-      created_at: "2025-05-01T12:00:00.000Z",
-    },
-  ];
+  const dispatch = useDispatch<AppDispatch>();
+  const tokenFromStore = useSelector((state: RootState) => state.user.token);
+  const token = tokenFromStore || localStorage.getItem("token");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeTabId, setActiveTabId] = useState<string>("");
+  const allTodos = useSelector((state: RootState) => state.todos.todos as Todo[]);
+
+  useEffect(() => {
+    const fetchPageData = async () => {
+      if (token) {
+        try {
+          const fetchedCategories = await getCategories(token);
+          setCategories(fetchedCategories);
+          if (fetchedCategories.length > 0) {
+            setActiveTabId(fetchedCategories[0].id);
+          } else {
+            setActiveTabId("");
+          }
+          dispatch(fetchTodos(token));
+        } catch (error) {
+          console.error("Kategori ve todo verileri getirilirken hata oluştu:", error);
+        }
+      }
+    };
+    fetchPageData();
+  }, [token, dispatch]);
 
   return (
     <div className="container mx-auto p-4 lg:p-6">
@@ -46,7 +66,7 @@ const CategoryPage = () => {
         <h1 className="text-2xl sm:text-3xl font-bold">Kategori Yönetimi</h1>
       </div>
 
-      <Tabs defaultValue="backend" className="w-full">
+      <Tabs value={activeTabId} onValueChange={setActiveTabId} className="w-full">
         <TabsList className="grid w-full grid-cols-3 shadow-lg h-auto p-1">
           {categories.map((category) => (
             <TabsTrigger
@@ -64,7 +84,7 @@ const CategoryPage = () => {
                 </span>
               </div>
               <Badge variant="secondary" className="text-xs px-1 py-0">
-                {category.todoCount}
+                {allTodos.filter(todo => todo.category_ids && todo.category_ids.includes(category.id)).length}
               </Badge>
             </TabsTrigger>
           ))}
@@ -90,7 +110,7 @@ const CategoryPage = () => {
                       </CardTitle>
                       <CardDescription className="mt-1 text-sm">
                         Oluşturulma:{" "}
-                        {new Date(category.created_at).toLocaleDateString(
+                        {new Date(category.createdAt).toLocaleDateString(
                           "tr-TR"
                         )}
                       </CardDescription>
@@ -120,10 +140,6 @@ const CategoryPage = () => {
                     <h3 className="font-semibold mb-2 text-sm sm:text-base">
                       Kategori Bilgileri
                     </h3>
-                    <p className="text-muted-foreground mb-4 text-sm">
-                      {category.description}
-                    </p>
-
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-3" style={{backgroundColor:'#23293a', borderRadius:'0.5rem'}}>
                         <div className="text-sm" style={{color:'#bfc8e6'}}>
@@ -133,7 +149,7 @@ const CategoryPage = () => {
                           className="text-xl sm:text-2xl font-bold"
                           style={{ color: category.color }}
                         >
-                          {category.todoCount}
+                          {allTodos.filter(todo => todo.category_ids && todo.category_ids.includes(category.id)).length}
                         </div>
                       </div>
                       <div className="p-3" style={{backgroundColor:'#23293a', borderRadius:'0.5rem'}}>
@@ -183,7 +199,46 @@ const CategoryPage = () => {
                     </div>
                   </div>
 
-                  <div className="border-t pt-4">
+                  {/* Bu Kategoriye Ait Todolar Bölümü */}
+                  <div className="border-t pt-4 mt-4">
+                    <h3 className="font-semibold mb-3 text-sm sm:text-base">
+                      Bu Kategoriye Ait Todolar ({allTodos.filter(todo => todo.category_ids && todo.category_ids.includes(category.id)).length})
+                    </h3>
+                    {(() => {
+                      const categoryTodos = allTodos.filter(
+                        (todo) => todo.category_ids && todo.category_ids.includes(category.id)
+                      );
+                      if (categoryTodos.length > 0) {
+                        return (
+                          <ul className="space-y-3">
+                            {categoryTodos.map((todo) => (
+                              <li key={todo.id} className="p-3 rounded-md border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+                                <h4 className="font-medium text-base text-primary">{todo.title}</h4>
+                                <p className="text-sm text-muted-foreground mt-1">{todo.description}</p>
+                                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                                  <Badge variant={todo.status === 'COMPLETED' ? 'default' : 'secondary'}>{todo.status}</Badge>
+                                  <Badge variant="outline">Öncelik: {todo.priority}</Badge>
+                                  {todo.dueDate && (
+                                    <Badge variant="outline">
+                                      Bitiş: {new Date(todo.dueDate).toLocaleDateString("tr-TR")}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      } else {
+                        return (
+                          <p className="text-sm text-muted-foreground italic">
+                            Bu kategoride henüz todo bulunmamaktadır.
+                          </p>
+                        );
+                      }
+                    })()}
+                  </div>
+
+                  <div className="border-t pt-4 mt-6">
                     <h3 className="font-semibold mb-3 text-sm sm:text-base">
                       Kategori Detayları
                     </h3>
