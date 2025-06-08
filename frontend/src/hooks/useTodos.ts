@@ -8,8 +8,9 @@ export function useTodos() {
   const addTodo = async (payload: TodoPayload, token?: string) => {
     setLoading(true);
     setError(null);
+    const finalToken = token || localStorage.getItem('token') || undefined;
     try {
-      const data = await createTodo(payload, token);
+      const data = await createTodo(payload, finalToken);
       return data;
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Bir hata oluştu');
@@ -23,19 +24,33 @@ export function useTodos() {
   type UpdateTodoPayload = Partial<TodoPayload>;
 
   const updateTodo = async (id: string, payload: UpdateTodoPayload, token?: string) => {
+    setLoading(true);
+    setError(null);
+    const finalToken = token || localStorage.getItem('token') || undefined;
     try {
-      return await updateTodoService(id, payload, token);
-    } catch (err) {
+      const data = await updateTodoService(id, payload, finalToken);
+      return data;
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Bir hata oluştu');
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   // Todo silme fonksiyonu
   const deleteTodo = async (id: string, token?: string) => {
+    setLoading(true);
+    setError(null);
+    const finalToken = token || localStorage.getItem('token') || undefined;
     try {
-      return await deleteTodoService(id, token);
-    } catch (err) {
+      const data = await deleteTodoService(id, finalToken);
+      return data;
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Bir hata oluştu');
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -8,7 +8,8 @@ interface Todo {
   description: string;
   status: string;
   priority: string;
-  dueDate?: string; // due_date'den dueDate'e güncellendi ve opsiyonel yapıldı
+  dueDate?: string;
+  created_at?: string; // due_date'den dueDate'e güncellendi ve opsiyonel yapıldı
   categories?: Array<{ categoryId: string; Category: any }>; // Backend'den gelen yapı
   category_ids: string[]; // Dönüşüm sonrası eklenecek
 }

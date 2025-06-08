@@ -42,7 +42,6 @@ const Navbar = () => {
 
   const navigationLinks = [
     { path: "/", label: "Dashboard" },
-    { path: "/todos", label: "Görevler" },
     { path: "/categories", label: "Kategoriler" },
   ];
 

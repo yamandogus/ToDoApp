@@ -24,10 +24,11 @@ import {
 } from "@/components/ui/select";
 import { Plus, Calendar } from "lucide-react";
 import { useTodos } from "@/hooks/useTodos";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
 import { Checkbox } from "../ui/checkbox";
 import { getCategories, Category } from "@/services/categoryService";
+import { fetchTodos } from "@/store/slices/todoSlice";
 
 const todoSchema = z.object({
   title: z
@@ -63,7 +64,9 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
   const [open, setOpen] = useState(false);
   const { addTodo, loading } = useTodos();
   const token = useSelector((state: RootState) => state.auth.token);
+  const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.user.userId);
+  const localUserId = localStorage.getItem("userId");
   const [selected, setSelected] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [catLoading, setCatLoading] = useState(false);
@@ -112,9 +115,10 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
     console.log("data", data);
     console.log("selected", selected);
     console.log("userId", userId);
+    console.log("localUserId", localUserId);
     console.log("token", token);
     console.log("categories", categories);
-    if (!userId) {
+    if (!userId && !localUserId) {
       alert("Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.");
       return;
     }
@@ -129,7 +133,7 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
     try {
       const backendPayload = {
         title: data.title,
-        userId: userId,
+        userId: userId || localUserId,
         description: data.description || "",
         priority: data.priority,
         status: data.status,
@@ -137,10 +141,12 @@ const CreateTodoDialog = ({ trigger }: CreateTodoDialogProps) => {
         category_ids: selected,
       };
       await addTodo(backendPayload, token || undefined);
+      dispatch(fetchTodos(token))
       setOpen(false);
       reset();
       setSelected([]);
     } catch (error) {
+      console.log(error);
       alert("Görev oluşturulamadı. Lütfen daha sonra tekrar deneyin.");
     }
   };

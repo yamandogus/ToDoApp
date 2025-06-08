@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   DashboardHeader,
   StatsCards,
@@ -28,12 +28,13 @@ const Dashboard = () => {
     cancelled: todos.filter((t) => t.status === "cancelled").length,
   };
 
-  const recentTodos = todos.slice(0, 5).map((todo, idx) => ({
-    id: Number(todo.id) || idx,
+  const recentTodos = todos.slice(0, 5).map((todo) => ({
+    id: todo.id.toString(),
     title: todo.title,
     status: todo.status,
     priority: todo.priority,
-    due_date: todo.due_date || '',
+    dueDate: todo.dueDate || '',
+    createdAt: todo.createdAt || '',
     description: todo.description,
   }));
 
