@@ -113,11 +113,6 @@ const CategoryPage = () => {
             key={category.id}
             category={category}
             allTodos={allTodos}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onAddTodo={() => {}}
-            onShowStats={() => {}}
-            onShowTodos={() => {}}
             onEditTodo={handleEditClick}
             onDeleteTodo={setDeleteId}
           />

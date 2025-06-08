@@ -26,11 +26,6 @@ interface Todo {
 interface CategoryCardProps {
   category: Category;
   allTodos: Todo[];
-  onEdit: () => void;
-  onDelete: () => void;
-  onAddTodo: () => void;
-  onShowStats: () => void;
-  onShowTodos: () => void;
   onEditTodo: (todo: Todo) => void;
   onDeleteTodo: (id: string) => void;
 }
@@ -38,9 +33,6 @@ interface CategoryCardProps {
 const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   allTodos,
-  onAddTodo,
-  onShowStats,
-  onShowTodos,
   onEditTodo,
   onDeleteTodo,
 }) => {

@@ -4,7 +4,6 @@ import { Toaster } from 'react-hot-toast'
 import { store } from './store/store'
 import Navbar from './components/layout/Navbar'
 import Dashboard from './pages/Dashboard'
-import TodoDetailPage from './pages/TodoDetailPage'
 import CategoryPage from './pages/CategoryPage'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
@@ -21,7 +20,6 @@ function App() {
             <div>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/todos/:id" element={<TodoDetailPage />} />
                 <Route path="/categories" element={<CategoryPage />} />
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/register" element={<Register />} />
